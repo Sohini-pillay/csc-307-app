@@ -37,6 +37,10 @@ const findUserByName = (name) => {
   return users["users_list"].filter((user) => user["name"] === name);
 };
 
+const findUserByJob = (job) => {
+  return users["users_list"].filter((user) => user["job"] === job);
+};
+
 const findUserById = (id) =>
   users["users_list"].find((user) => user["id"] === id);
 
@@ -44,6 +48,9 @@ const addUser = (user) => {
   users["users_list"].push(user);
   return user;
 };
+
+// const deleteUser = (id) =>
+//   (users["user_list"] = users["user_list"].filter((user) => user["id"] !== id));
 
 app.use(express.json());
 
@@ -53,8 +60,13 @@ app.get("/", (req, res) => {
 
 app.get("/users", (req, res) => {
   const name = req.query.name;
+  const job = req.query.job;
   if (name != undefined) {
     let result = findUserByName(name);
+    result = { users_list: result };
+    res.send(result);
+  } else if (job != undefined) {
+    let result = findUserByJob(job);
     result = { users_list: result };
     res.send(result);
   } else {
@@ -77,6 +89,12 @@ app.post("/users", (req, res) => {
   addUser(userToAdd);
   res.send();
 });
+
+// app.delete("/users/:id", (req, res) => {
+//   const id = req.params["id"];
+//   let result = deleteUser(id);
+//   res.send(result);
+// });
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
