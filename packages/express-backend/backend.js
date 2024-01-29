@@ -49,8 +49,13 @@ const addUser = (user) => {
   return user;
 };
 
-// const deleteUser = (id) =>
-//   (users["user_list"] = users["user_list"].filter((user) => user["id"] !== id));
+const deleteUser = (id) => {
+  const foundUser = users["users_list"].find((user) => user["id"] === id);
+  if (foundUser) {
+    const userIndex = users["users_list"].indexOf(foundUser);
+    users["users_list"].splice(userIndex, 1);
+  }
+};
 
 app.use(express.json());
 
@@ -90,11 +95,11 @@ app.post("/users", (req, res) => {
   res.send();
 });
 
-// app.delete("/users/:id", (req, res) => {
-//   const id = req.params["id"];
-//   let result = deleteUser(id);
-//   res.send(result);
-// });
+app.delete("/users/:id", (req, res) => {
+  const id = req.params["id"];
+  let result = deleteUser(id);
+  res.send(result);
+});
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
