@@ -54,11 +54,19 @@ const addUser = (user) => {
 };
 
 const deleteUser = (id) => {
-  const foundUser = users["users_list"].find((user) => user["id"] === id);
-  if (foundUser) {
-    const userIndex = users["users_list"].indexOf(foundUser);
-    users["users_list"].splice(userIndex, 1);
+  const foundUserIndex = users["users_list"].findIndex(
+    (user) => user["id"] === id
+  );
+  if (foundUserIndex !== -1) {
+    const deletedUser = users["users_list"].splice(foundUserIndex, 1)[0];
+    return deletedUser;
+  } else {
+    return null;
   }
+};
+
+const generateID = () => {
+  return Math.random().toString().substr(2, 6);
 };
 
 app.use(cors());
@@ -90,20 +98,26 @@ app.get("/users/:id", (req, res) => {
   if (result === undefined) {
     res.status(404).send("Resource not found.");
   } else {
-    res.send(result);
+    res.send();
   }
 });
 
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
+  userToAdd.id = generateID();
+
   addUser(userToAdd);
-  res.send();
+  res.status(201).send(userToAdd);
 });
 
 app.delete("/users/:id", (req, res) => {
   const id = req.params["id"];
   let result = deleteUser(id);
-  res.send(result);
+  if (result === null) {
+    res.status(404).send();
+  } else {
+    res.status(204).send(result);
+  }
 });
 
 app.listen(port, () => {
