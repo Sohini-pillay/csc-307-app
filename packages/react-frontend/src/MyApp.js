@@ -38,16 +38,13 @@ function MyApp() {
   }
 
   function updateList(person) {
-    postUser(person)
-      .then((res) => {
-        if (res.status !== 201) {
-          console.log("Cannot add user");
-        }
-      })
-      .then(() => setCharacters([...characters, person]))
-      .catch((error) => {
-        console.log(error);
-      });
+    postUser(person).then((res) => {
+      if (res.status !== 201) {
+        console.log("Cannot add user");
+      } else {
+        setCharacters([...characters, person]);
+      }
+    });
   }
 
   function fetchUsers() {
